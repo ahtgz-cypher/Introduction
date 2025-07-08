@@ -1,1 +1,2 @@
-# Introduction
+# Finding Flags
+Solution: đề bài cho sẵn Flag và chỉ cần lấy và submit

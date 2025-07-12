@@ -103,11 +103,17 @@ json_recv()
   from base64 import b64decode
   from codecs import encode
   from Crypto.Util.number import long_to_bytes
-
   io = remote('socket.cryptohack.org', 13377)
+  while 'flag' not in (encoded := loads(io.recvline().decode())):
+      print(encoded)
+      io.sendline(dumps({"decoded": {
+      'base64': lambda e: b64.decode(e).decode(),
+      'hex': lambda e: bytesfromhex(e).decode(),
+      'rot13': lambda e: encode(e, 'rot13'),
+      'bigint': lambda e: long_to_bytes(int(e, 16)).decode(),
+      'utf-8': lambda e: ''.join ([chr(c) for c in e])
+  }[encoded['type']](encode['encoded'])}))
 
-  while 'flag' not in (encode := loads(io.recvline().decode())):
-    print(encoded)
-  io.sendline(dumps({"decoded": {
-    'base64': lambda e: b64decode(e).decode(),
-  
+  print(encoded[['flag'])
+  và sẽ nhận được flag như sau
+  crypto{3nc0d3_d3c0d3_3nc0d3}

@@ -4,24 +4,37 @@
 #!/usr/bin/env python3
 
 from Crypto.Util.number import bytes_to_long, long_to_bytes
+
 from utils import listener # this is cryptohack's server-side module and not part of python
+
 import base64
+
 import codecs
+
 import random
 
 FLAG = "crypto{????????????????????}"
+
 ENCODINGS = [
+
     "base64",
+    
     "hex",
+    
     "rot13",
+    
     "bigint",
+    
     "utf-8",
 ]
+
 with open('/usr/share/dict/words') as f:
+
     WORDS = [line.strip().replace("'", "") for line in f.readlines()]
 
 
 class Challenge():
+
     def __init__(self):
         self.no_prompt = True # Immediately send data from the server without waiting for user input
         self.challenge_words = ""
@@ -98,22 +111,38 @@ json_recv()
 # Solution
 - File đầu là cách giải, Flag được encode nhiều lần bằng các loại encoding khác nhau và nhiệm vụ của mình là kết nối đến socket bài cho để nhận và encoding dữ liệu, server sẽ gửi khoảng 100 lần và nếu chúng ta đi được tới 100 lần đó thì có thể nhận được Flag
 - Hướng giải: Kết nối đến socket và nhận dữ liệu, viết code để decode dữ liệu ngay khi nhận được một kiểu dữ liệu nào đó và nếu kêt quả decode ra có dạng crypto{...} thì dừng chương trình và lấy Flag
+
   from pwn import remote
+
   from json import loads, dumps
+
   from base64 import b64decode
+  
   from codecs import encode
+  
   from Crypto.Util.number import long_to_bytes
+  
   io = remote('socket.cryptohack.org', 13377)
+  
   while 'flag' not in (encoded := loads(io.recvline().decode())):
+  
       print(encoded)
+  
       io.sendline(dumps({"decoded": {
+  
       'base64': lambda e: b64.decode(e).decode(),
+  
       'hex': lambda e: bytesfromhex(e).decode(),
+  
       'rot13': lambda e: encode(e, 'rot13'),
+  
       'bigint': lambda e: long_to_bytes(int(e, 16)).decode(),
+  
       'utf-8': lambda e: ''.join ([chr(c) for c in e])
+  
   }[encoded['type']](encode['encoded'])}))
 
   print(encoded[['flag'])
+  
   và sẽ nhận được flag như sau
   crypto{3nc0d3_d3c0d3_3nc0d3}

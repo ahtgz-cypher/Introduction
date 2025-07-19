@@ -57,6 +57,7 @@ print(sub_bytes(state, sbox=inv_s_box))
 
 # Solution
 def sub_bytes(s, sbox = s_box)
+
   return bytes(sbox[b] for row in s for b in row)
 
 print(sub_bytes(state, sbox = inv_s_box)
